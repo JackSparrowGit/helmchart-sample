@@ -1,0 +1,20 @@
+{{- if .Values.clusterRole.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "helmchart-sample.clusterRoleName" . }}-cluster-rolebinding
+  labels:
+    {{- include "helmchart-sample.labels" . | nindent 4 }}
+  {{- with .Values.clusterRole.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+subjects:
+  - kind: ServiceAccount
+    namespace: {{ .Values.namespace}}
+    name: {{ include "helmchart-sample.serviceAccountName" .}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "helmchart-sample.clusterRoleName" . }}
+{{- end }}

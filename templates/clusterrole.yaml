@@ -1,0 +1,41 @@
+{{- if .Values.clusterRole.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "helmchart-sample.clusterRoleName" . }}
+  labels:
+    {{- include "helmchart-sample.labels" . | nindent 4 }}
+  {{- with .Values.clusterRole.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+rules:
+  - verbs:
+      - list
+      - get
+    apiGroups:
+      - ''
+    resources:
+      - namespaces
+      - secrets
+      - configmaps
+  - verbs:
+      - list
+    apiGroups:
+      - ''
+    resources:
+      - pods
+  - verbs:
+      - get
+      - list
+      - create
+      - update
+      - patch
+      - delete
+    apiGroups:
+      - ''
+      - extensions
+      - apps
+    resources:
+      - deployments
+{{- end }}
